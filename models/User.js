@@ -72,6 +72,19 @@ class User {
 
     // UPDATE
 
+    updateName(newName){
+        return db.result(`update users
+            set name=$2
+        where id=$1`, [this.id, newName]);
+    }
+
+    updateTodoName(id, newTodoName){
+        return db.result(`update todos
+            set name=$2
+        where id=$1
+        and user_id=$3`, [id, newTodoName, this.id]);
+    }
+
     // DELETE
     delete(){
         return db.result(`

@@ -1,12 +1,23 @@
 require('dotenv').config();
 
-// const Todo = require('./models/Todo');
+const Todo = require('./models/Todo');
 const User = require('./models/User');
 
-User.searchByName('a')
-    .then(users => {
-        console.log(users);
-    });
+// User.searchByName('a')
+//     .then(users => {
+//         console.log(users);
+//     });
+
+
+User.getById(1)
+    .then(user => {
+        Todo.assignToUser(1,1);
+        user.updateTodoName(2, 'Drink vodka');
+        console.log(user.getTodos());
+    })
+
+
+
 
 // User.getById(6)
 //     .then(u => {
