@@ -3,6 +3,13 @@ const express = require('express');
 const Todo = require('./models/Todo');
 const User = require('./models/User');
 const app = express();
+const bodyParser = require('body-parser');
+
+//Configure body-parser to read data sent by HTML form tags
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Configure body-parser to read JSON bodies
+app.use(bodyParser.json());
 
 //Users
 app.get('/users', (req, res) => {
@@ -11,6 +18,33 @@ app.get('/users', (req, res) => {
             res.send(allUsers);
         })
 });
+
+//Listen for POST requests
+app.post('/users', (req, res) => {
+    const newUsername = req.body.name;
+    User.add(newUsername)
+        .then(theUser => {
+            res.send(theUser);
+        })
+});
+
+app.post('/users/:id([0-9]+)', (req, res) => {
+    const id = req.params.id;
+    const newName = req.body.name;
+    //Get the user by their id
+    User.getById(id)
+        .then(theUser => {
+            //call that user's updateName method
+            theUser.updateName(newName)
+                .then(result => {
+                    if (result.rowCount === 1){
+                        res.send("Yeah you did");
+                    }else{
+                        res.send("oops");
+                    }
+                })
+        })
+})
 
 app.get('/users/:id([0-9]+)', (req,res) => {
     User.getById(req.params.id)
