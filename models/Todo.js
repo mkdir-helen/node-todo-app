@@ -89,13 +89,4 @@ class Todo {
 // }
 
 
-module.exports = {
-    add,
-    assignToUser,
-    deleteById,
-    getAll,
-    getById,
-    markCompleted,
-    markPending,
-    updateName,
-};
+module.exports = Todo;

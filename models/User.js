@@ -159,14 +159,14 @@ class User {
 // }
 
 // ============================================
-// UPDATE
-function updateName(id, name) {
-    return db.result(`
-        update users
-            set name=$2
-        where id=$1
-    `, [id, name]);
-}
+// // UPDATE
+// function updateName(id, name) {
+//     return db.result(`
+//         update users
+//             set name=$2
+//         where id=$1
+//     `, [id, name]);
+// }
 
 // ============================================
 // DELETE

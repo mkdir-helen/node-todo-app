@@ -1,20 +1,66 @@
 require('dotenv').config();
-
+const express = require('express');
 const Todo = require('./models/Todo');
 const User = require('./models/User');
+const app = express();
 
-// User.searchByName('a')
-//     .then(users => {
-//         console.log(users);
-//     });
+//Listen for a get request
+app.get('/', (req, res) => {
+    User.getAll()
+        .then(allUsers => {
+            res.send(allUsers);
+        })
+});
+
+app.get('/users/:id([0-9]+)', (req,res) => {
+    // console.log(req.params.id);
+    User.getById(req.params.id)
+        .catch(err => {
+            res.send({
+                message: `no soup for you`
+            });
+        })
+        .then(theUser => {
+            res.send(theUser);
+        })
+});
 
 
-User.getById(1)
-    .then(user => {
-        Todo.assignToUser(1,1);
-        user.updateTodoName(2, 'Drink vodka');
-        console.log(user.getTodos());
-    })
+app.listen(3000, () => {
+    console.log('Your express app is ready!');
+});
+
+//     User.getAll()
+//         .then(allUsers => {
+//             let usersList = ``;
+//             allUsers.forEach(user +> {
+//                 usersList += `<li>${user.name}</li>`
+//             });
+//             let thePage = `
+//                 <!doctype>
+//                 <html>
+//                     <head>
+//                     </head>
+//                     <body>
+//                         <h1>hey</h1>
+//                         <ul>
+//                             ${usersList}
+//                         </ul>    
+//                     </body>
+//                 </html>
+//             `;
+//             res.send(thePage);
+//         })
+//     // res.send("Hellooooooo Expressssssssss");
+// });
+
+
+// User.getById(1)
+//     .then(user => {
+//         Todo.assignToUser(1,1);
+//         user.updateTodoName(2, 'Drink vodka');
+//         console.log(user.getTodos());
+//     })
 
 
 
