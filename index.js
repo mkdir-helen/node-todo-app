@@ -4,8 +4,8 @@ const Todo = require('./models/Todo');
 const User = require('./models/User');
 const app = express();
 
-//Listen for a get request
-app.get('/', (req, res) => {
+//Users
+app.get('/users', (req, res) => {
     User.getAll()
         .then(allUsers => {
             res.send(allUsers);
@@ -13,15 +13,39 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users/:id([0-9]+)', (req,res) => {
-    // console.log(req.params.id);
     User.getById(req.params.id)
         .catch(err => {
             res.send({
-                message: `no soup for you`
+                message: `No soup for you!!`
             });
         })
         .then(theUser => {
+            theUser.getTodos()
+                .then(todos => res.send({theUser, todos}))
+        })
+});
+
+app.get('/users/:name([A-Za-z]+)', (req, res) => {
+    User.searchByName(req.params.name)
+        .then(theUser =>{
             res.send(theUser);
+        })
+});
+
+
+//Todos
+
+app.get('/todos', (req, res) => {
+    Todo.getAll()
+        .then(allTodos => {
+            res.send(allTodos)
+        })
+})
+
+app.get('/todos/:id([0-9]+)', (req, res) => {
+    Todo.getById(req.params.id)
+        .then(theTodo => {
+            res.send(theTodo);
         })
 });
 
@@ -33,7 +57,7 @@ app.listen(3000, () => {
 //     User.getAll()
 //         .then(allUsers => {
 //             let usersList = ``;
-//             allUsers.forEach(user +> {
+//             allUsers.forEach(user => {
 //                 usersList += `<li>${user.name}</li>`
 //             });
 //             let thePage = `
