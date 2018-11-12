@@ -1,4 +1,4 @@
-insert into todos 
+insert into todos
     (name, completed)
 values
     ('walk the cat', false),
@@ -8,10 +8,10 @@ values
     ('return david bowie''s texts', false);
 
 insert into users
-    (name)
+    (name, username, pwhash)
 values
-    ('aylin'),
-    ('beth'),
-    ('chris'),
-    ('bruce'),
-    ('alf');
+    ('aylin', 'aylin', '$2b$10$2sTWH5rj4/q4P0ur8XdNueHC.gLcqe1/5cMOzEKzkObndr4nfa0OK'),
+    ('beth', 'beth', '$2b$10$2sTWH5rj4/q4P0ur8XdNueHC.gLcqe1/5cMOzEKzkObndr4nfa0OK'),
+    ('chris', 'chris', '$2b$10$2sTWH5rj4/q4P0ur8XdNueHC.gLcqe1/5cMOzEKzkObndr4nfa0OK'),
+    ('bruce', 'bruce', '$2b$10$2sTWH5rj4/q4P0ur8XdNueHC.gLcqe1/5cMOzEKzkObndr4nfa0OK'),
+    ('alf', 'alf', '$2b$10$2sTWH5rj4/q4P0ur8XdNueHC.gLcqe1/5cMOzEKzkObndr4nfa0OK');

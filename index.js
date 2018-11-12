@@ -7,6 +7,9 @@ const bodyParser = require('body-parser');
 const page = require('./views/page');
 const userList = require('./views/userList');
 const userForm = require('./views/userForm');
+const registrationForm = require('./views/registrationForm');
+const login = require('./views/login');
+const bcrypt = require('bcrypt');
 
 app.use(express.static('public'));
 
@@ -15,6 +18,64 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Configure body-parser to read JSON bodies
 app.use(bodyParser.json());
+
+
+app.get('/register', (req, res) => {
+    //Send them the signup form
+    res.send(page(registrationForm()));
+})
+
+app.post('/register', (req, res) => {
+    //Process the signup form
+    //1.grab the values out of req.body
+    const newName = req.body.name;
+    const newUsername = req.body.username;
+    const newPassword = req.body.password;
+    //2. call user.add
+    User.add(newName, newUsername, newPassword)
+        .then(newUser => {
+            res.redirect('/welcome');
+        })
+    //3.if that works, redirect to the welcome page
+
+})
+
+app.get('/welcome', (req, res) => {
+    //Send them the welcome page
+    res.send(page('<h1>Welcome</h1>'));
+})
+
+app.get('/login', (req, res) => {
+    res.send(page(login()));
+})
+
+app.post('/login', (req, res) => {
+    const loginUsername = req.body.username;
+    const loginPassword = req.body.password;
+   //2. Find a user whose name matches 'theUsername'
+   User.searchByUserName(loginUsername)
+        .catch(err => {
+            console.log(err);
+            res.redirect('/login');
+        })
+        .then(theUser => {
+            console.log(theUser);
+            console.log(loginPassword);
+            const didMatch = bcrypt.compareSync(loginPassword, theUser.pwhash);
+            if(didMatch){
+                res.redirect('/welcome');
+            }else{
+                res.redirect('/login');
+            }
+        })
+   //3.If I find a user then, check to see if the password matches
+   //4.
+})
+
+
+
+
+
 
 
 app.get('/', (req, res) => {
