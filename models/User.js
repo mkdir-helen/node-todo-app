@@ -34,7 +34,7 @@ class User {
     // RETRIEVE
     static getAll() {
         return db.any(`
-            select * from users
+            select * from users order by id
         `).then(userArray => {
             // transform array of objects
             // into array of User instances
@@ -76,7 +76,10 @@ class User {
         this.name = newName;
         return db.result(`update users
             set name=$2
-        where id=$1`, [this.id, newName]);
+        where id=$1`, [this.id, newName])
+        .then(result => {
+            return result.rowCount === 1;
+        })
     }
 
     // updateTodoName(id, newTodoName){
