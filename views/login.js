@@ -2,11 +2,6 @@ function login(){
     return `
         <form action="/login" method="POST">
             <label for="">
-                Your name:
-                <input type="text" name="name">
-            </label>
-            <br>
-            <label for="">
                 Username:
                 <input type="text" name="username">
             </label>

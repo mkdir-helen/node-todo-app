@@ -11,6 +11,17 @@ const registrationForm = require('./views/registrationForm');
 const login = require('./views/login');
 const bcrypt = require('bcrypt');
 
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const db = require('./models/db');
+app.use(session({
+    store: new pgSession({
+        pgPromise: db
+    }),
+    secret: 'abc123',
+    saveUninitialized: false
+}));
+
 app.use(express.static('public'));
 
 //Configure body-parser to read data sent by HTML form tags
@@ -19,6 +30,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Configure body-parser to read JSON bodies
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+    const thePage = page('hey there');
+    res.send(thePage);
+})
 
 app.get('/register', (req, res) => {
     //Send them the signup form
@@ -34,6 +49,7 @@ app.post('/register', (req, res) => {
     //2. call user.add
     User.add(newName, newUsername, newPassword)
         .then(newUser => {
+            req.session.user = newUser;
             res.redirect('/welcome');
         })
     //3.if that works, redirect to the welcome page
@@ -42,7 +58,8 @@ app.post('/register', (req, res) => {
 
 app.get('/welcome', (req, res) => {
     //Send them the welcome page
-    res.send(page('<h1>Welcome</h1>'));
+    // console.log(req.session.user);
+    res.send(page(`<h1>Welcome ${req.session.user.username}</h1>`));
 })
 
 app.get('/login', (req, res) => {
@@ -59,10 +76,9 @@ app.post('/login', (req, res) => {
             res.redirect('/login');
         })
         .then(theUser => {
-            console.log(theUser);
-            console.log(loginPassword);
-            const didMatch = bcrypt.compareSync(loginPassword, theUser.pwhash);
-            if(didMatch){
+            // const didMatch = bcrypt.compareSync(loginPassword, theUser.pwhash);
+            if(theUser.passwordDoesMatch(thePassword)){
+                req.session.user = theUser;
                 res.redirect('/welcome');
             }else{
                 res.redirect('/login');
@@ -78,10 +94,6 @@ app.post('/login', (req, res) => {
 
 
 
-app.get('/', (req, res) => {
-    const thePage = page('hey there');
-    res.send(thePage);
-})
 
 
 //Listen for a GET request

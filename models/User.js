@@ -78,6 +78,11 @@ class User {
             return u;
         })
     }
+
+    static passwordDoesMatch(thePassword){
+        const didMatch = bcrypt.compareSync(thePassword, this.pwhash);
+        return didMatch;
+    }
     
 
 
